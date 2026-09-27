@@ -113,6 +113,3 @@ When changing the workflow:
 3. Keep chain- and fork-specific statements current.
 4. Validate the skill before opening a pull request.
 
-## License
-
-No license is currently included. Add an appropriate license before allowing third parties to copy, modify, or redistribute the project.
