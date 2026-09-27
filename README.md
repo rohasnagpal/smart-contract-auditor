@@ -1,6 +1,6 @@
 # Smart Contract Auditor
 
-A Codex skill for evidence-led security reviews of Solidity and EVM smart contracts.
+An agent skill for evidence-led security reviews of Solidity and EVM smart contracts. It works with **Claude Code**, **Codex**, **Cursor**, and other coding agents that support the [Agent Skills](https://agentskills.io) `SKILL.md` format.
 
 The skill guides an agent through scope discovery, hostile-repository precautions, compilation, testing, static analysis, fuzzing, manual review, exploit validation, business-logic analysis, severity assessment, reporting, and remediation verification.
 
@@ -31,31 +31,66 @@ The skill guides an agent through scope discovery, hostile-repository precaution
 
 ```text
 smart-contract-auditor/
+├── LICENSE
 ├── README.md
 └── SKILL.md
 ```
 
-`SKILL.md` is the Codex skill entrypoint and contains the complete audit workflow, safety controls, review checklist, severity model, and report format.
+`SKILL.md` is the only file an agent needs. It contains the complete audit workflow, safety controls, review checklist, severity model, and report format.
 
 ## Installation
 
-Clone the repository into the Codex skills directory:
+### Simplest: ask your agent
 
-```bash
-git clone YOUR_REPOSITORY_URL ~/.codex/skills/smart-contract-auditor
+Paste this into Codex, Claude Code, Cursor, or any agent with shell access:
+
+```text
+Install the skill from https://github.com/rohasnagpal/smart-contract-auditor
 ```
 
-Alternatively, clone it elsewhere and copy the `smart-contract-auditor` directory into `~/.codex/skills/`.
+Codex installs it with its built-in skill installer. Other agents clone the repository into their skills directory. Restart the agent or open a new session if the skill does not show up straight away.
 
-Restart Codex if the skill is not discovered immediately.
+### One command for any agent
+
+The [`skills`](https://github.com/vercel-labs/skills) CLI detects the agents you have installed and installs the skill for each of them:
+
+```bash
+npx skills add rohasnagpal/smart-contract-auditor
+```
+
+### Manual install
+
+Clone the repository into your agent's skills directory:
+
+| Agent | Personal (all projects) | Project only (commit it to share with a team) |
+| --- | --- | --- |
+| Claude Code | `~/.claude/skills/smart-contract-auditor` | `.claude/skills/smart-contract-auditor` |
+| Codex | `~/.codex/skills/smart-contract-auditor` | `.codex/skills/smart-contract-auditor` |
+| Cursor | `~/.cursor/skills/smart-contract-auditor` | `.cursor/skills/smart-contract-auditor` |
+
+For example, for Claude Code:
+
+```bash
+git clone https://github.com/rohasnagpal/smart-contract-auditor ~/.claude/skills/smart-contract-auditor
+```
+
+Agents without skill support can still use it: point the agent at `SKILL.md` or add it to the agent's instructions file (for example `AGENTS.md`).
+
+### Updating
+
+```bash
+git -C <skills-directory>/smart-contract-auditor pull
+```
 
 ## Usage
 
-Invoke the skill explicitly:
+The agent loads the skill automatically when you ask for a smart contract audit. To call it explicitly:
 
-```text
-Use $smart-contract-auditor to audit this Foundry project.
-```
+| Agent | Explicit invocation |
+| --- | --- |
+| Claude Code | `/smart-contract-auditor audit this Foundry project` |
+| Codex | `Use $smart-contract-auditor to audit this Foundry project.` |
+| Cursor | `/smart-contract-auditor audit this Foundry project` |
 
 Example requests:
 
@@ -65,7 +100,7 @@ Example requests:
 - `Verify whether the supplied patch resolves the reported reentrancy issue.`
 - `Audit this proof-of-existence contract's security and trust assumptions.`
 
-When invoked in a Solidity project, the skill first inspects executable configuration and repository hooks before running project-controlled commands.
+Before running any project-controlled commands in a Solidity project, the skill inspects executable configuration and repository hooks. It follows the host agent's permission and sandbox model: anything that needs network access, installs, or elevated privileges goes through the agent's normal approval prompt.
 
 ## Tooling
 
@@ -94,13 +129,17 @@ The skill does not provide a security certification or guarantee that reviewed c
 
 ## Validation
 
-Validate the skill with Codex's bundled skill validator:
+Validate the frontmatter with the Agent Skills reference validator:
+
+```bash
+npx skills-ref validate .
+```
+
+Alternatively, use the `quick_validate.py` script from Anthropic's or Codex's `skill-creator` skill (requires PyYAML):
 
 ```bash
 python3 /path/to/skill-creator/scripts/quick_validate.py .
 ```
-
-The validator requires PyYAML in the Python environment.
 
 ## Contributing
 
@@ -109,10 +148,11 @@ Contributions should keep findings evidence-led, preserve strict authorization b
 When changing the workflow:
 
 1. Keep the YAML frontmatter valid and the skill name unchanged unless intentionally migrating it.
-2. Check that new commands cannot broadcast transactions or expose secrets.
-3. Keep chain- and fork-specific statements current.
-4. Validate the skill before opening a pull request.
+2. Keep instructions agent-neutral: describe actions, not a particular agent's tool names or approval flow.
+3. Check that new commands cannot broadcast transactions or expose secrets.
+4. Keep chain- and fork-specific statements current.
+5. Validate the skill before opening a pull request.
 
 ## License
 
-No license is currently included. Add an appropriate license before allowing third parties to copy, modify, or redistribute the project.
+MIT. See [LICENSE](LICENSE).

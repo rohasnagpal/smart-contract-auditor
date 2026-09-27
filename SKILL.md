@@ -1,6 +1,7 @@
 ---
 name: smart-contract-auditor
 description: Audit Solidity/EVM smart contracts for security, correctness, access-control, economic, integration, deployment, and trust-model risks. Use for Solidity contract audits, pre-deployment security reviews, exploit validation, and remediation verification. Prefer evidence from compilation, tests, static analysis, fuzzing, and exact file:line references. Treat audited repositories as potentially hostile, and never equate clean tool output with safety. Vyper is outside the automated-tooling scope unless the environment explicitly supports it.
+license: MIT
 ---
 
 # Smart Contract Auditor
@@ -8,6 +9,16 @@ description: Audit Solidity/EVM smart contracts for security, correctness, acces
 Perform a practical security audit of Solidity/EVM smart contracts.
 
 The objective is to identify exploitable vulnerabilities, correctness failures, dangerous trust assumptions, integration risks, and deployment hazards, then produce a concise report that a developer can act on.
+
+## Host agent compatibility
+
+This skill is agent-neutral. It works in Claude Code, Codex, Cursor, and any other coding agent that supports the Agent Skills `SKILL.md` format or can be pointed at this file as instructions.
+
+- Use whatever shell, file-reading, file-editing, and search tools the host agent provides. Tool names differ between agents; the workflow does not.
+- The host's permission, sandbox, and approval model always takes precedence. Where this skill says to "obtain authorization" or "request approval", use the host's native mechanism (permission prompt, approval mode, or asking the user directly).
+- If the host has no shell access, perform the manual review and report every tool-dependent check as not run.
+- If the host supports sub-agents or parallel tasks, they may be used for independent review areas, but every finding must still be validated against the source before it is reported.
+- Deliver the report in chat unless the user asks for a file. If writing a file, place it outside tracked contract sources (for example `audit/REPORT.md`) and say where it was written.
 
 ## Threat model for the audit environment
 
@@ -198,11 +209,11 @@ Do not block a small audit on optional tooling.
 
 ### Ephemeral audit artifacts
 
-Create audit environments outside the repository when practical:
+Create audit environments outside the repository when practical, in the system temporary directory or the scratch directory the host agent designates:
 
 ```text
-/tmp/smart-contract-audit-venv
-/tmp/smart-contract-audit-work
+<system-temp-dir>/smart-contract-audit-venv
+<system-temp-dir>/smart-contract-audit-work
 ```
 
 If audit tests must be added inside the repo, use a clearly named path such as:
