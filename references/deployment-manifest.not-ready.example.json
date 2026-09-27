@@ -1,0 +1,35 @@
+{
+  "build": {
+    "artifactSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "compilerInputSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "compilerVersion": "0.8.24+commit.e11b9ed9",
+    "creationBytecodeSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "deployedBytecodeSha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "evmVersion": "shanghai",
+    "optimizer": { "enabled": true, "runs": 200 },
+    "viaIR": false
+  },
+  "cleanRoomRebuild": {
+    "command": "Not run",
+    "comparedArtifacts": [],
+    "result": "Not tested"
+  },
+  "constructor": {
+    "parameters": [{ "name": "initialFee", "solidityType": "uint256" }],
+    "signature": "constructor(uint256)"
+  },
+  "contract": {
+    "name": "Example",
+    "sourcePath": "sources/Example.sol",
+    "sourceSha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "createdAt": "2026-09-27T00:00:00Z",
+  "deploymentReady": false,
+  "files": { "SPEC.md": "2222222222222222222222222222222222222222222222222222222222222222" },
+  "findings": [{ "id": "EX-01", "resolution": "Open", "severity": "High" }],
+  "limitations": ["Constructor values have not been approved."],
+  "missingArtifacts": ["constructor-args.hex", "deployment-values.json", "init-code.hex"],
+  "releaseId": "example-parameterized",
+  "schemaVersion": "1.0.0",
+  "target": { "chainId": 137, "evmVersion": "shanghai", "nativeCurrency": "POL" }
+}

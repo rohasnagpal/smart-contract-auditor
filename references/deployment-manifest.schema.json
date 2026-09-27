@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/rohasnagpal/solidity-builder-auditor/schemas/deployment-manifest-1.0.0.json",
+  "title": "Solidity Builder Auditor Deployment Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "deploymentReady",
+    "releaseId",
+    "createdAt",
+    "contract",
+    "build",
+    "target",
+    "constructor",
+    "files",
+    "findings",
+    "cleanRoomRebuild",
+    "missingArtifacts",
+    "limitations"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "deploymentReady": { "type": "boolean" },
+    "releaseId": { "type": "string", "minLength": 1 },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "sourcePath", "sourceSha256"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "sourcePath": { "type": "string", "minLength": 1 },
+        "sourceSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "build": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["compilerVersion", "evmVersion", "optimizer", "viaIR", "compilerInputSha256", "artifactSha256", "creationBytecodeSha256", "deployedBytecodeSha256"],
+      "properties": {
+        "compilerVersion": { "type": "string", "minLength": 1 },
+        "evmVersion": { "type": "string", "minLength": 1 },
+        "optimizer": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["enabled", "runs"],
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "runs": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "viaIR": { "type": "boolean" },
+        "compilerInputSha256": { "$ref": "#/$defs/sha256" },
+        "artifactSha256": { "$ref": "#/$defs/sha256" },
+        "creationBytecodeSha256": { "$ref": "#/$defs/sha256" },
+        "deployedBytecodeSha256": { "$ref": "#/$defs/sha256" },
+        "linkReferences": { "type": "object" },
+        "immutableReferences": { "type": "object" }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["chainId", "evmVersion"],
+      "properties": {
+        "chainId": { "type": "integer", "minimum": 1 },
+        "evmVersion": { "type": "string", "minLength": 1 },
+        "nativeCurrency": { "type": "string" }
+      }
+    },
+    "constructor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signature", "parameters"],
+      "properties": {
+        "signature": { "type": "string" },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "solidityType"],
+            "properties": {
+              "name": { "type": "string" },
+              "solidityType": { "type": "string", "minLength": 1 },
+              "value": {}
+            }
+          }
+        },
+        "encodedArgsSha256": { "$ref": "#/$defs/sha256" },
+        "initCodeSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "ownership": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "initialOwner": { "type": "string" },
+        "postDeploymentProcedure": { "type": "string" }
+      }
+    },
+    "files": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/$defs/sha256" }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "severity", "resolution"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "severity": { "enum": ["Critical", "High", "Medium", "Low", "Informational"] },
+          "resolution": { "enum": ["Open", "Resolved", "Partially resolved", "Unresolved", "Accepted risk"] },
+          "acceptance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["decisionMaker", "decidedAt", "rationale"],
+            "properties": {
+              "decisionMaker": { "type": "string", "minLength": 1 },
+              "decidedAt": { "type": "string", "format": "date-time" },
+              "rationale": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "cleanRoomRebuild": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["command", "result", "comparedArtifacts"],
+      "properties": {
+        "command": { "type": "string", "minLength": 1 },
+        "result": { "enum": ["Pass", "Fail", "Not tested"] },
+        "comparedArtifacts": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "missingArtifacts": { "type": "array", "items": { "type": "string" } },
+    "limitations": { "type": "array", "items": { "type": "string" } }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": ["deploymentReady"],
+        "properties": { "deploymentReady": { "const": true } }
+      },
+      "then": {
+        "properties": {
+          "constructor": {
+            "required": ["encodedArgsSha256", "initCodeSha256"],
+            "properties": {
+              "parameters": {
+                "items": { "required": ["name", "solidityType", "value"] }
+              }
+            }
+          },
+          "files": {
+            "required": [
+              "SPEC.md",
+              "abi.json",
+              "audit-report.md",
+              "build-artifact.json",
+              "compiler-input.json",
+              "compiler-settings.json",
+              "constructor-args.hex",
+              "constructor-schema.json",
+              "creation-bytecode.hex",
+              "deployed-bytecode.hex",
+              "deployment-manifest.schema.json",
+              "deployment-values.json",
+              "init-code.hex",
+              "remediation-history.md",
+              "traceability.json"
+            ]
+          },
+          "cleanRoomRebuild": {
+            "properties": { "result": { "const": "Pass" } }
+          },
+          "missingArtifacts": { "maxItems": 0 },
+          "findings": {
+            "items": {
+              "allOf": [
+                {
+                  "if": { "properties": { "severity": { "enum": ["Critical", "High"] } } },
+                  "then": { "properties": { "resolution": { "const": "Resolved" } } }
+                },
+                {
+                  "if": { "properties": { "severity": { "enum": ["Medium", "Low"] } } },
+                  "then": { "properties": { "resolution": { "enum": ["Resolved", "Accepted risk"] } } }
+                },
+                {
+                  "if": { "properties": { "resolution": { "const": "Accepted risk" } } },
+                  "then": { "required": ["acceptance"] }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "build": {
+    "artifactSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "compilerInputSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "compilerVersion": "0.8.24+commit.e11b9ed9",
+    "creationBytecodeSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "deployedBytecodeSha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "evmVersion": "shanghai",
+    "immutableReferences": {},
+    "linkReferences": {},
+    "optimizer": { "enabled": true, "runs": 200 },
+    "viaIR": false
+  },
+  "cleanRoomRebuild": {
+    "command": "forge clean && forge build --force --build-info && forge test -vvv",
+    "comparedArtifacts": ["abi.json", "creation-bytecode.hex", "deployed-bytecode.hex"],
+    "result": "Pass"
+  },
+  "constructor": {
+    "encodedArgsSha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "initCodeSha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "parameters": [{ "name": "initialFee", "solidityType": "uint256", "value": "10000000000000000" }],
+    "signature": "constructor(uint256)"
+  },
+  "contract": {
+    "name": "Example",
+    "sourcePath": "sources/Example.sol",
+    "sourceSha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "createdAt": "2026-09-27T00:00:00Z",
+  "deploymentReady": true,
+  "files": {
+    "SPEC.md": "2222222222222222222222222222222222222222222222222222222222222222",
+    "abi.json": "3333333333333333333333333333333333333333333333333333333333333333",
+    "audit-report.md": "4444444444444444444444444444444444444444444444444444444444444444",
+    "build-artifact.json": "5555555555555555555555555555555555555555555555555555555555555555",
+    "compiler-input.json": "6666666666666666666666666666666666666666666666666666666666666666",
+    "compiler-settings.json": "7777777777777777777777777777777777777777777777777777777777777777",
+    "constructor-args.hex": "8888888888888888888888888888888888888888888888888888888888888888",
+    "constructor-schema.json": "9999999999999999999999999999999999999999999999999999999999999999",
+    "creation-bytecode.hex": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "deployed-bytecode.hex": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "deployment-manifest.schema.json": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "deployment-values.json": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "init-code.hex": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "remediation-history.md": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "sources/Example.sol": "1111111111111111111111111111111111111111111111111111111111111111",
+    "traceability.json": "2222222222222222222222222222222222222222222222222222222222222222"
+  },
+  "findings": [],
+  "limitations": [],
+  "missingArtifacts": [],
+  "ownership": {
+    "initialOwner": "0x0000000000000000000000000000000000000001",
+    "postDeploymentProcedure": "Transfer through the contract's documented two-step ownership flow."
+  },
+  "releaseId": "example-1.0.0",
+  "schemaVersion": "1.0.0",
+  "target": { "chainId": 137, "evmVersion": "shanghai", "nativeCurrency": "POL" }
+}
