@@ -1,6 +1,6 @@
 ---
 name: solidity-builder-auditor
-description: Build production-oriented Solidity/EVM contracts from approved conversational requirements, test and audit them, remediate verified findings, and freeze reproducible artifacts for a separate deployer. Also use for security audits and fix verification of existing Solidity projects. Do not invoke for informal examples, tutorials, or throwaway snippets unless the user explicitly requests the production build-and-audit workflow. Never create keys, sign, or broadcast transactions.
+description: Build production-oriented Solidity/EVM contracts from approved conversational requirements, test and audit them, remediate verified findings, and freeze reproducible artifacts for a separate deployer. Also use for security audits and fix verification of existing Solidity projects. Do not invoke for informal examples, tutorials, or throwaway snippets unless the user explicitly requests the production build-and-audit workflow. Never create live keys or sign or broadcast to a non-local chain.
 license: MIT
 ---
 
@@ -29,10 +29,10 @@ Prefer an isolated working copy, container, or host-designated scratch directory
 
 ### Live-chain and key boundary
 
-This skill prepares artifacts but never performs custody or deployment. Never:
+This skill prepares artifacts but never performs custody or live deployment. Never on a testnet, mainnet, shared devnet, fork connected for broadcast, or any other non-local chain:
 
 - create or handle a mainnet private key, seed phrase, or keystore password
-- sign or broadcast any transaction
+- sign or broadcast a transaction
 - fund a deployer
 - use credentials or RPC secrets discovered in a repository
 - execute `forge create`, `forge script --broadcast`, `cast send`, `cast publish`, `cast wallet sign`, or `cast mktx`
@@ -40,14 +40,14 @@ This skill prepares artifacts but never performs custody or deployment. Never:
 - invoke Python or JavaScript transaction-signing or broadcast APIs
 - call a production RPC merely because its URL is present in configuration
 
-A **separate deployer** means a user-operated application or wallet that independently verifies the release manifest and hashes, displays the exact chain/constructor/fee details, obtains authorization, signs locally, broadcasts, and verifies deployed bytecode. If asked to deploy, provide the frozen bundle and non-secret deployment inputs or instructions for that separate tool; do not execute them.
+A **separate deployer** means a user-operated application or wallet that independently verifies the release manifest and hashes, displays the exact chain/constructor/fee details, obtains authorization, signs locally, broadcasts, and verifies deployed bytecode. If asked to deploy to a non-local chain, provide the frozen bundle and non-secret deployment inputs or instructions for that separate tool; do not execute them.
 
-Integration tests should use a local node or an explicitly authorized safe test/fork endpoint without real keys.
+Local integration tests may sign and broadcast only to an ephemeral Anvil or Hardhat node started for the task, bound to loopback, using its disposable default test accounts. Pin and verify the local chain ID and RPC URL; never reuse a repository, browser, testnet, mainnet, or funded key. Stop the local node after testing. A read-only fork may be used when authorized, but transactions must remain inside the local fork.
 
 ## Core assurance rules
 
 - A clean build, test suite, analyzer result, or coverage percentage is not proof of security.
-- Freeze scope, commit/source hash, local modifications, included contracts, exclusions, compiler, EVM target, optimizer, dependencies, and target chains.
+- Freeze scope, commit/source hash, local modifications, included contracts, exclusions, compiler, EVM target, optimizer, dependencies, and intended chain IDs. Produce one final release bundle per exact chain ID; each manifest has one `target.chainId`.
 - Validate every analyzer signal against source and reachable behavior.
 - Connect every reported vulnerability to concrete code, prerequisites, and impact.
 - Mark relevant checks `Pass`, `Fail`, `Not applicable`, or `Not tested` with evidence.

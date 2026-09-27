@@ -1,4 +1,4 @@
-# Smart Contract Builder and Auditor
+# Solidity Builder and Auditor
 
 An agent skill that can turn a user conversation into a specified, tested, audited Solidity/EVM contract and freeze deployment-ready artifacts. It also performs evidence-led security reviews of existing contracts. It works with **Claude Code**, **Codex**, **Cursor**, and other coding agents that support the [Agent Skills](https://agentskills.io) `SKILL.md` format.
 
@@ -17,7 +17,7 @@ For a new contract, the skill:
 7. rebuilds and re-audits after every material correction
 8. performs a clean-room rebuild and freezes source, ABI, bytecode, compiler input/build artifacts, exact approved constructor encoding, traceability, remediation history, audit report, and checksums for a separate deployment application
 
-The skill never creates mainnet keys, signs transactions, funds deployers, or broadcasts deployments.
+The skill never creates live keys, funds deployers, or signs or broadcasts to any non-local chain. It may use disposable default test accounts only on an ephemeral loopback Anvil/Hardhat node.
 
 ## What it covers
 
@@ -54,7 +54,6 @@ solidity-builder-auditor/
 └── references/
     ├── contract-lifecycle.md
     ├── deployment-manifest.example.json
-    ├── deployment-manifest.invalid.example.json
     ├── deployment-manifest.not-ready.example.json
     ├── deployment-manifest.schema.json
     ├── audit-review.md
@@ -145,7 +144,7 @@ Example requests:
 
 Before running any project-controlled commands in a Solidity project, the skill inspects executable configuration and repository hooks. It follows the host agent's permission and sandbox model: anything that needs network access, installs, or elevated privileges goes through the agent's normal approval prompt.
 
-A separate deployer is a user-operated application or wallet that verifies the frozen release hashes, displays the exact chain and constructor values, signs locally, broadcasts, and verifies deployed bytecode. This skill prepares that handoff but never creates keys, signs, or broadcasts—even on testnets.
+A separate deployer is a user-operated application or wallet that verifies the frozen release hashes, displays the exact chain and constructor values, signs locally, broadcasts, and verifies deployed bytecode. This skill prepares that handoff but never creates live keys or signs or broadcasts to a non-local chain.
 
 ## Tooling
 
@@ -177,6 +176,13 @@ The skill does not provide a security certification or guarantee that reviewed c
 
 ## Validation
 
+Install the manifest-test dependency in an isolated development environment and run the targeted schema and cross-field invariant tests:
+
+```bash
+python -m pip install 'jsonschema[format]'
+python scripts/test_manifest_schema.py
+```
+
 Validate the frontmatter with the Agent Skills reference validator:
 
 ```bash
@@ -200,6 +206,10 @@ When changing the workflow:
 3. Check that new commands cannot broadcast transactions or expose secrets.
 4. Keep chain- and fork-specific statements current.
 5. Validate the skill before opening a pull request.
+
+### Migration from the old name
+
+Installations made under `smart-contract-auditor` do not automatically move. Remove or archive the old installed folder and clone/install `solidity-builder-auditor`, then restart the agent so the new skill identity is discovered.
 
 ## License
 

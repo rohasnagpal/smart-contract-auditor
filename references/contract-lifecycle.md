@@ -147,7 +147,7 @@ A candidate is eligible for a frozen release only when:
 - every Critical or High finding has resolution exactly `Resolved`; these severities cannot be released as accepted risk
 - every Medium or Low finding has resolution `Resolved` or `Accepted risk`; acceptance must identify the finding, rationale, named human decision-maker, and decision time
 - no Critical, High, Medium, or Low finding remains `Open`, `Partially resolved`, or `Unresolved`
-- compiler, EVM, optimizer, dependencies, constructor schema, and target chains are recorded
+- compiler, EVM, optimizer, dependencies, constructor schema, and the bundle's single exact target chain ID are recorded; create a separate bundle for every additional chain
 - source and generated artifacts correspond exactly
 - a clean-room rebuild using only the frozen sources, recorded compiler input, and pinned dependencies reproduces the ABI and creation/runtime bytecode, subject only to documented link and immutable references
 - the final audit report identifies limitations and checks not performed

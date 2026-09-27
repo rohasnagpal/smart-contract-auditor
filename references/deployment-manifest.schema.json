@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/rohasnagpal/solidity-builder-auditor/schemas/deployment-manifest-1.0.0.json",
+  "$id": "urn:rohasnagpal:solidity-builder-auditor:deployment-manifest:1.1.0",
   "title": "Solidity Builder Auditor Deployment Manifest",
   "type": "object",
   "additionalProperties": false,
@@ -9,21 +9,50 @@
     "deploymentReady",
     "releaseId",
     "createdAt",
+    "scope",
     "contract",
+    "sources",
     "build",
     "target",
     "constructor",
     "files",
+    "dependencies",
+    "commands",
     "findings",
     "cleanRoomRebuild",
     "missingArtifacts",
     "limitations"
   ],
   "properties": {
-    "schemaVersion": { "const": "1.0.0" },
+    "schemaVersion": { "const": "1.1.0" },
     "deploymentReady": { "type": "boolean" },
     "releaseId": { "type": "string", "minLength": 1 },
     "createdAt": { "type": "string", "format": "date-time" },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scopeId", "sourceCommit", "includedContracts", "excludedPaths"],
+      "properties": {
+        "scopeId": { "type": "string", "minLength": 1 },
+        "sourceCommit": {
+          "oneOf": [
+            { "type": "string", "pattern": "^[0-9a-f]{40,64}$" },
+            { "type": "null" }
+          ]
+        },
+        "includedContracts": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "excludedPaths": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
     "contract": {
       "type": "object",
       "additionalProperties": false,
@@ -32,6 +61,19 @@
         "name": { "type": "string", "minLength": 1 },
         "sourcePath": { "type": "string", "minLength": 1 },
         "sourceSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "sha256"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "sha256": { "$ref": "#/$defs/sha256" }
+        }
       }
     },
     "build": {
@@ -66,7 +108,7 @@
       "properties": {
         "chainId": { "type": "integer", "minimum": 1 },
         "evmVersion": { "type": "string", "minLength": 1 },
-        "nativeCurrency": { "type": "string" }
+        "nativeCurrency": { "type": "string", "minLength": 1 }
       }
     },
     "constructor": {
@@ -105,15 +147,41 @@
       "minProperties": 1,
       "additionalProperties": { "$ref": "#/$defs/sha256" }
     },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "version", "source", "remapping"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "version": { "type": "string", "minLength": 1 },
+          "source": { "type": "string", "minLength": 1 },
+          "remapping": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "commands": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["build", "test", "analyze"],
+      "properties": {
+        "build": { "$ref": "#/$defs/commands" },
+        "test": { "$ref": "#/$defs/commands" },
+        "analyze": { "$ref": "#/$defs/optionalCommands" }
+      }
+    },
     "findings": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "severity", "resolution"],
+        "required": ["id", "severity", "classification", "verification", "resolution"],
         "properties": {
           "id": { "type": "string", "minLength": 1 },
           "severity": { "enum": ["Critical", "High", "Medium", "Low", "Informational"] },
+          "classification": { "enum": ["Confirmed finding", "Potential issue", "Design consideration", "Analyzer false positive"] },
+          "verification": { "enum": ["Code review", "Confirmed by test/trace", "Needs confirmation", "Not applicable"] },
           "resolution": { "enum": ["Open", "Resolved", "Partially resolved", "Unresolved", "Accepted risk"] },
           "acceptance": {
             "type": "object",
@@ -125,7 +193,16 @@
               "rationale": { "type": "string", "minLength": 1 }
             }
           }
-        }
+        },
+        "allOf": [
+          {
+            "if": {
+              "required": ["resolution"],
+              "properties": { "resolution": { "const": "Accepted risk" } }
+            },
+            "then": { "required": ["acceptance"] }
+          }
+        ]
       }
     },
     "cleanRoomRebuild": {
@@ -135,11 +212,11 @@
       "properties": {
         "command": { "type": "string", "minLength": 1 },
         "result": { "enum": ["Pass", "Fail", "Not tested"] },
-        "comparedArtifacts": { "type": "array", "items": { "type": "string" } }
+        "comparedArtifacts": { "type": "array", "items": { "type": "string", "minLength": 1 } }
       }
     },
-    "missingArtifacts": { "type": "array", "items": { "type": "string" } },
-    "limitations": { "type": "array", "items": { "type": "string" } }
+    "missingArtifacts": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "limitations": { "type": "array", "items": { "type": "string", "minLength": 1 } }
   },
   "allOf": [
     {
@@ -164,7 +241,6 @@
               "audit-report.md",
               "build-artifact.json",
               "compiler-input.json",
-              "compiler-settings.json",
               "constructor-args.hex",
               "constructor-schema.json",
               "creation-bytecode.hex",
@@ -183,17 +259,21 @@
           "findings": {
             "items": {
               "allOf": [
+                { "properties": { "classification": { "const": "Confirmed finding" } } },
+                { "properties": { "verification": { "enum": ["Code review", "Confirmed by test/trace"] } } },
                 {
-                  "if": { "properties": { "severity": { "enum": ["Critical", "High"] } } },
+                  "if": {
+                    "required": ["severity"],
+                    "properties": { "severity": { "enum": ["Critical", "High"] } }
+                  },
                   "then": { "properties": { "resolution": { "const": "Resolved" } } }
                 },
                 {
-                  "if": { "properties": { "severity": { "enum": ["Medium", "Low"] } } },
+                  "if": {
+                    "required": ["severity"],
+                    "properties": { "severity": { "enum": ["Medium", "Low"] } }
+                  },
                   "then": { "properties": { "resolution": { "enum": ["Resolved", "Accepted risk"] } } }
-                },
-                {
-                  "if": { "properties": { "resolution": { "const": "Accepted risk" } } },
-                  "then": { "required": ["acceptance"] }
                 }
               ]
             }
@@ -203,6 +283,15 @@
     }
   ],
   "$defs": {
-    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "commands": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "optionalCommands": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    }
   }
 }

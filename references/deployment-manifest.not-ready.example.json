@@ -1,35 +1,64 @@
 {
-  "build": {
-    "artifactSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-    "compilerInputSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-    "compilerVersion": "0.8.24+commit.e11b9ed9",
-    "creationBytecodeSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-    "deployedBytecodeSha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-    "evmVersion": "shanghai",
-    "optimizer": { "enabled": true, "runs": 200 },
-    "viaIR": false
-  },
-  "cleanRoomRebuild": {
-    "command": "Not run",
-    "comparedArtifacts": [],
-    "result": "Not tested"
-  },
-  "constructor": {
-    "parameters": [{ "name": "initialFee", "solidityType": "uint256" }],
-    "signature": "constructor(uint256)"
+  "schemaVersion": "1.1.0",
+  "deploymentReady": false,
+  "releaseId": "example-parameterized-polygon",
+  "createdAt": "2026-09-27T00:00:00Z",
+  "scope": {
+    "scopeId": "example-contract-draft",
+    "sourceCommit": null,
+    "includedContracts": ["sources/Example.sol:Example"],
+    "excludedPaths": []
   },
   "contract": {
     "name": "Example",
     "sourcePath": "sources/Example.sol",
     "sourceSha256": "1111111111111111111111111111111111111111111111111111111111111111"
   },
-  "createdAt": "2026-09-27T00:00:00Z",
-  "deploymentReady": false,
-  "files": { "SPEC.md": "2222222222222222222222222222222222222222222222222222222222222222" },
-  "findings": [{ "id": "EX-01", "resolution": "Open", "severity": "High" }],
-  "limitations": ["Constructor values have not been approved."],
+  "sources": [
+    {
+      "path": "sources/Example.sol",
+      "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+    }
+  ],
+  "build": {
+    "compilerVersion": "0.8.24+commit.e11b9ed9",
+    "evmVersion": "shanghai",
+    "optimizer": { "enabled": true, "runs": 200 },
+    "viaIR": false,
+    "compilerInputSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "artifactSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "creationBytecodeSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "deployedBytecodeSha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "target": { "chainId": 137, "evmVersion": "shanghai", "nativeCurrency": "POL" },
+  "constructor": {
+    "signature": "constructor(uint256)",
+    "parameters": [{ "name": "initialFee", "solidityType": "uint256" }]
+  },
+  "files": {
+    "SPEC.md": "2222222222222222222222222222222222222222222222222222222222222222",
+    "sources/Example.sol": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "dependencies": [],
+  "commands": {
+    "build": ["forge build --force --build-info"],
+    "test": ["forge test -vvv"],
+    "analyze": []
+  },
+  "findings": [
+    {
+      "id": "EX-01",
+      "severity": "High",
+      "classification": "Potential issue",
+      "verification": "Needs confirmation",
+      "resolution": "Open"
+    }
+  ],
+  "cleanRoomRebuild": {
+    "command": "Not run",
+    "comparedArtifacts": [],
+    "result": "Not tested"
+  },
   "missingArtifacts": ["constructor-args.hex", "deployment-values.json", "init-code.hex"],
-  "releaseId": "example-parameterized",
-  "schemaVersion": "1.0.0",
-  "target": { "chainId": 137, "evmVersion": "shanghai", "nativeCurrency": "POL" }
+  "limitations": ["Constructor values have not been approved."]
 }
